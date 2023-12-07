@@ -19,13 +19,17 @@ pipeline {
         }
         stage('docker image build and push'){
             steps{
+              withCredentials([string(credentialsId: 'DOCKER', variable: 'docker')]) {
+
                 dir('orderapps'){
                 
                 sh"""
+                  doker login -u batchusivaji -p ${docker}
                   docker image build -t batchusivaji/argocd:v.${BUILD_ID} .
                   docker image push batchusivaji/argocd:v.${BUILD_ID}
                  """
-                }
+                 }
+              }
             }
         }
         stage('deploy manifest files'){
