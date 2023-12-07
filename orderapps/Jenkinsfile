@@ -2,7 +2,7 @@ pipeline {
     agent {label "Docker"}
     triggers{pollSCM('* * * * *')}
     stages {
-        stage('clean work spce'){
+        stage('clean work space'){
             steps{
                 cleanWs()
             }
