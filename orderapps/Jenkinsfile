@@ -29,14 +29,19 @@ pipeline {
             }
         }
         stage('deploy manifest files'){
-            sh "cd ~/argocd/deploy && yq eval -i '.spec.template.spec.containers[0].image= \"batchusivaji/argocd:v.${BUILD_ID}\" ' ~/argocd/manifests/order.yaml"
-            sh"""
-              ~/argocd
-              git add ~/argocd/manifests/order.yaml
-              git commit -m "updating manifests"
-              git push origin main
-              """
+            steps{
+                dir('orderapps'){
+                sh "cd ~/argocd/deploy && yq eval -i '.spec.template.spec.containers[0].image= \"batchusivaji/argocd:v.${BUILD_ID}\" ' ~/argocd/manifests/order.yaml"
+                sh"""
+                  ~/argocd
+                  git add ~/argocd/manifests/order.yaml
+                  git commit -m "updating manifests"
+                  git push origin main
 
+                  """
+                }
+
+            }
         }
-    }
+    }    
 }
