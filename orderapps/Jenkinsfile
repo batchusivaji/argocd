@@ -15,10 +15,13 @@ pipeline {
         }
         stage('docker image build and push'){
             steps{
+                dir('orderapps') {
+                
                 sh"""
                   docker image build -t batchusivaji/argocd:v.${BUILD_ID} .
                   docker image push batchusivaji/argocd:v.${BUILD_ID}
-                  """
+                 """
+                }
             }
         }
         stage('deploy manifest files'){
