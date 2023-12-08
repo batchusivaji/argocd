@@ -16,9 +16,10 @@ pipeline {
         stage('docker image build and push'){
             steps{
                 sh "docker image build -t batchusivaji/argocd:v.${BUILD_ID} ."
-                withCredentials([string(credentialsId: 'DOCKER', variable: 'docker')]) {
+                withCredentials([string(credentialsId: 'DOKCER', variable: 'docker')]) {
                   sh 'docker login -u batchusivaji -p $docker'
                   sh 'docker image push batchusivaji/argocd:v.${BUILD_ID}'
+                  sh 'docker image rm -f batchusivaji/argocd:v.${BUILD_ID}'
                 }
               
             }
