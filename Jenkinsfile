@@ -4,31 +4,23 @@ pipeline {
     stages {
         stage('clean work space'){
             steps{
-                dir('orderapps'){
                 cleanWs()
-               }
             }
         }
         stage('git checkout main'){
             steps{
-                dir('orderapps'){
-                git url:'https://github.com/batchusivaji/argocd.git' ,
-                    branch: 'main'
-                }
+                 git url:'https://github.com/batchusivaji/argocd.git' ,
+                     branch: 'main'
             }
         }
         stage('docker image build and push'){
             steps{
-              withCredentials([string(credentialsId: 'DOCKER', variable: 'docker')]) {
-
-                dir('orderapps'){
-                sh"""
-                  doker login -u batchusivaji -p ${docker}
-                  docker image build -t batchusivaji/argocd:v.${BUILD_ID} .
-                  docker image push batchusivaji/argocd:v.${BUILD_ID}
-                 """
-                 }
-              }
+                sh "docker image build -t batchusivaji/argocd:v.${BUILD_ID} ."
+                withCredentials([string(credentialsId: 'DOCKER', variable: 'docker')]) {
+                  sh 'docker login -u batchusivaji -p $docker'
+                  sh 'docker image push batchusivaji/argocd:v.${BUILD_ID}'
+                }
+              
             }
         }
         stage('deploy manifest files'){
